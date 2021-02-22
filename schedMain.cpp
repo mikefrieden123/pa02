@@ -1,3 +1,8 @@
+//Programmer: Mike Frieden
+//Course: CS3800
+//Section: 102
+//Assignment: PA02 Scheduler Showdown
+
 #include<vector> // process vector
 #include<iostream> // cout, cin
 #include<chrono> // sleep duration
@@ -118,6 +123,7 @@ int main(int argc, char* argv[])
 
 
               // TODO set procIdx to the proper index for the next process to be scheduled using SPN
+              procIdx = ShortestProcessNext(curTime, procList, maxNumProcessors);
 
 
               break;
@@ -127,7 +133,7 @@ int main(int argc, char* argv[])
 
 
               // TODO set procIdx to the proper index for the next process to be scheduled using SRT
-
+              procIdx = ShortestRemainingTime(curTime, procList, maxNumProcessors);
 
               break;
 
@@ -136,6 +142,7 @@ int main(int argc, char* argv[])
 
 
               // TODO set procIdx to the proper index for the next process to be scheduled using HRRN
+              procIdx = HighestResponseRatioNext(curTime, procList, maxNumProcessors);
 
               break;
       }
@@ -221,9 +228,37 @@ int main(int argc, char* argv[])
   //its done! output the run statistics
   cout << "\n\nRun Statistics:\n";
 
+    //total turnaround to be averaged
+    float turnTotal = 0.0;
 
+    //total normalized turnaround to be averaged
+    float normTotal = 0.0;
 
   //TODO output the requested run stats
+    for(int i=0;i<procList.size();i++)
+    {
+
+      //Time Finished
+      float done = procList[i].timeFinished;
+      //Time Started
+      float start = procList[i].startTime;
+      //Time Needed
+      float serv = procList[i].totalTimeNeeded;
+      //Turnaround
+      float turn = (done - start +1);
+      //Normalized Turnaround
+      float norm = turn/serv;
+      //Add to total turnaround
+      turnTotal+=turn;
+      //add to total normalized turnaround
+      normTotal+=norm;
+      cout<<"Process: "<<procList[i].id<<endl;
+      cout<<"Finished at time: "<<done<<endl;
+      cout<<"Turnaround time: "<<turn<<endl;
+      cout<<"Normalized TR time: "<<norm<<"\n-------------------------\n";
+    }
+    cout<<"AVG TURNAROUND: "<<(turnTotal/procList.size())<<endl;
+    cout<<"AVG NORMALIZED: "<<(normTotal/procList.size())<<endl;
 
   return 0;
 }
